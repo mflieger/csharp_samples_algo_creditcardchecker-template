@@ -10,7 +10,44 @@ namespace CreditCardChecker
         /// </summary>
         public static bool IsCreditCardValid(string creditCardNumber)
         {
-            throw new NotImplementedException();
+            bool result = false;
+
+            if (creditCardNumber.Length == 16)
+            {
+                bool swap = false;
+                int evenNumber = 0;
+                int oddNumber = 0;
+
+                for (int i = 0; i < creditCardNumber.Length - 1; i++)
+                {
+                    if (!swap)
+                    {
+                        int tmp = ConvertToInt(creditCardNumber[i]) * 2;
+                        if (tmp > 9)
+                        {
+                            tmp = tmp - 9;
+                        }
+                        evenNumber = (evenNumber * 10) + tmp;
+                        swap = true;
+                    }
+                    else
+                    {
+                        int tmp = ConvertToInt(creditCardNumber[i]);
+                        oddNumber = (oddNumber * 10) + tmp;
+                        swap = false;
+                    }
+                }
+
+                evenNumber = CalculateDigitSum(evenNumber);
+                oddNumber = CalculateDigitSum(oddNumber);
+                int checkDigit = CalculateCheckDigit(oddNumber, evenNumber);
+
+                if (checkDigit == creditCardNumber[15] - '0')
+                {
+                    result = true;
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -19,7 +56,15 @@ namespace CreditCardChecker
         /// </summary>
         private static int CalculateCheckDigit(int oddSum, int evenSum)
         {
-            throw new NotImplementedException();
+            int sum = oddSum + evenSum;
+            int result = 0;
+
+            while((sum + result) % 10 != 0)
+            {
+                result++;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -27,12 +72,23 @@ namespace CreditCardChecker
         /// </summary>
         private static int CalculateDigitSum(int number)
         {
-            throw new NotImplementedException();
+            int result = 0;
+
+            //42424873
+            while(number != 0)
+            {
+                result += (number % 10);
+                number = number / 10;
+            }
+
+            return result;
         }
 
         private static int ConvertToInt(char ch)
         {
-            throw new NotImplementedException();
+            int result = ch - '0';
+
+            return result;
         }
     }
 }
